@@ -1,30 +1,45 @@
 #include "variadic_functions.h"
-#include <stdarg.h>
-#include <stdio.h>
+
 
 /**
- * print_strings - prints numbers, followed by a new line
- * @separator: string to be printed between strings
- * @n: amount of numbers given to the function to print
+ * print_all - prints all kinds of types
+ * @format: the list of types of arguments
  * Return: nothing
  */
-void print_strings(const char *separator, const unsigned int n, ...)
+void print_all(const char * const format, ...)
 {
-	va_list strs;
-	unsigned int i;
-	const char *str;
+	va_list ar;
+	int i = 0;
+	char form;
+	char *str;
 
-	va_start(strs, n);
-	for (i = 0; i < n; i++)
+	va_start(ar, format);
+	while (format != NULL && format[i])
 	{
-		str = va_arg(strs, const char *);
-		if (str)
-			printf("%s", str);
-		else
-			printf("(nil)");
-		if (i < (n - 1) && separator != 0)
-			printf("%s", separator);
+		form = format[i];
+		switch (form)
+		{
+			case 'c':
+				printf("%c", va_arg(ar, int));
+				break;
+			case 'i':
+				printf("%d", va_arg(ar, int));
+				break;
+			case 'f':
+				printf("%f", va_arg(ar, double));
+				break;
+			case 's':
+				str = va_arg(ar, char *);
+				if (str == NULL)
+					str = "(nil)";
+				printf("%s", str);
+				break;
+		}
+		if ((form == 'c' || form == 'i' || form == 'f' || form == 's')
+				&& format[i + 1])
+			printf(", ");
+		i++;
 	}
 	printf("\n");
-	va_end(strs);
+	va_end(ar);
 }
